@@ -31,6 +31,18 @@ jobs:
         shell: cmd
 
     steps:
+      - name: Free disk space on C.
+        shell: bash
+        run: |
+          df -h /c /d 2>/dev/null || true
+          for d in /c/Android /c/ghcup /c/rtools* /c/Julia* /c/Miniconda /c/selenium \
+                   /c/hostedtoolcache/windows/{go,Ruby,PyPy,Java_*,CodeQL} \
+                   "/c/Program Files/Microsoft SQL Server" "/c/Program Files/PostgreSQL" "/c/Program Files/MongoDB"; do
+            [ -e "$d" ] && rm -rf "$d" 2>/dev/null &
+          done
+          wait
+          df -h /c /d 2>/dev/null || true
+
       - name: Prepare directories.
         run: |
           mkdir %userprofile%\TBuild\Libraries
